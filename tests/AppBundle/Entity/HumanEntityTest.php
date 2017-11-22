@@ -17,50 +17,28 @@ use \TypeError;
 
 class HumanEntityTest extends TestCase
 {
-    public function testIntroduceYourself()
-    {
-        //arrange (подготовка)
-        $human = new HumanEntity('Валентин', 25);
-
-        //act (действие)
-        $about = $human->introduceYourself();
-
-        //assert (утверждение)
-        $this->assertStringStartsWith('Меня зовут Валентин', $about);
-    }
-
     /**
-     * @dataProvider introduceYourselfExceptionsProvider
-     *
      * @expectedException InvalidArgumentException
-     *
      */
-    public function testIntroduceYourselfExceptions($name, $age)
+    public function testIntroduceYourselfExceptions()
     {
         // или аннотация @expectedException InvalidArgumentException
         $this->expectException(InvalidArgumentException::class);
-        $human = new HumanEntity($name, $age);
-    }
-
-
-    public function introduceYourselfExceptionsProvider()
-    {
-        return [
-            ['', 25],
-            ['Вася', -1],
-        ];
+        $human = new HumanEntity('Вася', 42);
     }
 
     /**
      * @dataProvider introduceYourselfErrorsProvider
+     *
+     * @depends testIntroduceYourselfExceptions
      */
     public function testIntroduceYourselfErrors($name, $age)
     {
         try {
             $human = new HumanEntity($name, $age);
         } catch (Throwable $t) {
-            $this->assertInstanceOf(TypeError::class, $t);
         }
+        $this->assertInstanceOf(TypeError::class, $t);
     }
 
 
@@ -71,5 +49,20 @@ class HumanEntityTest extends TestCase
             [array(), ''],
             [0, array()],
         ];
+    }
+
+    /**
+     * @depends testIntroduceYourselfErrors
+     */
+    public function testIntroduceYourself()
+    {
+        //arrange (подготовка)
+        $human = new HumanEntity('Валентин', 25);
+
+        //act (действие)
+        $about = $human->introduceYourself();
+
+        //assert (утверждение)
+        $this->assertStringStartsWith('Меня зовут Валентин', $about);
     }
 }
