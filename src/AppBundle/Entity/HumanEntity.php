@@ -15,6 +15,7 @@ class HumanEntity
     private $name;
     private $age;
     private $drinks;
+    private $currentAlcohol;
 
     public function __construct(string $name, int $age)
     {
@@ -43,6 +44,15 @@ class HumanEntity
 
     public function whatIDrink() {
         return $this->drinks;
+    }
+
+    public function takeAlcohol(Alcohol $alcohol)
+    {
+        $this->currentAlcohol = $alcohol;
+    }
+
+    public function diluteAlcohol() {
+        return $this->currentAlcohol->downAlcohol();
     }
 
 

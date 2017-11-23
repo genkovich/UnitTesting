@@ -17,4 +17,5 @@ class Beer extends Alcohol
         $this->strong = 12;
     }
 
+
 }

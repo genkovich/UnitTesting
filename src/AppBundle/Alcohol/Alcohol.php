@@ -20,4 +20,9 @@ abstract class Alcohol
     public function getTitle() {
         return $this->title;
     }
+
+    public function downAlcohol()
+    {
+        return --$this->strong;
+    }
 }

@@ -16,4 +16,16 @@ class Wine extends Alcohol
         $this->title = 'Винишко';
         $this->strong = 20;
     }
+
+    public function getTemperature() {
+        return 10;
+    }
+
+    public function showEnv()
+    {
+        $temperature = $this->getTemperature();
+        $title = $this->getTitle();
+        return $title . $temperature;
+
+    }
 }
