@@ -22,9 +22,8 @@ class HumanEntityTest extends TestCase
      */
     public function testIntroduceYourselfExceptions()
     {
-        // или аннотация @expectedException InvalidArgumentException
         $this->expectException(InvalidArgumentException::class);
-        $human = new HumanEntity('Вася', 42);
+        $human = new HumanEntity('', 42);
     }
 
     /**

@@ -7,12 +7,14 @@
  */
 
 namespace AppBundle\Entity;
+use AppBundle\Alcohol\Alcohol;
 use \InvalidArgumentException;
 
 class HumanEntity
 {
     private $name;
     private $age;
+    private $drinks;
 
     public function __construct(string $name, int $age)
     {
@@ -26,10 +28,22 @@ class HumanEntity
 
         $this->name = $name;
         $this->age = $age;
+        $this->drinks = [];
     }
 
     public function introduceYourself()
     {
         return 'Меня зовут ' . $this->name . '. Мне ' . $this->age . '.';
     }
+
+    public function drinkAlcohol(Alcohol $alcohol)
+    {
+        $this->drinks[] = $alcohol;
+    }
+
+    public function whatIDrink() {
+        return $this->drinks;
+    }
+
+
 }
