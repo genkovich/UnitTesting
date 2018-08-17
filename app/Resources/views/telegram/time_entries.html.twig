@@ -1,0 +1,4 @@
+Траты:
+{% for entry in entries %}
+    {{ entry.hours }} | {{ entry.comments }} | {{ issues[entry.issue.id].subject | default('not defined')}}
+{% endfor %}
