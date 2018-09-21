@@ -58,11 +58,11 @@ class MockTest extends TestCase
             ->getMock();
 
 
-        $mock->expects($this->once())->method('getTitle');
-        $mock->expects($this->once())->method('getTemperature');
+//        $mock->expects($this->once())->method('getTitle');
+//        $mock->expects($this->once())->method('getTemperature');
 
-//        $mock->expects($this->at(1))->method('getTitle');
-//        $mock->expects($this->at(0))->method('getTemperature');
+        $mock->expects($this->at(1))->method('getTitle');
+        $mock->expects($this->at(0))->method('getTemperature');
 
         $mock->showEnv();
     }

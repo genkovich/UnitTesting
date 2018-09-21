@@ -2,11 +2,14 @@
 
 namespace AppBundle\Controller;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Pool;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use DateTime;
+use Symfony\Component\HttpFoundation\Response;
 
 class DefaultController extends Controller
 {
@@ -28,7 +31,8 @@ class DefaultController extends Controller
         $chat = $result['message']['chat']['id'];
 
 
-        $today = new DateTime();
+        $when = $result['message']['text'] == 'yesterday' ? 'yesterday' : 'today';
+        $today = new DateTime($when);
 
         $client = new \GuzzleHttp\Client();
         $res = $client->request(
@@ -89,12 +93,63 @@ class DefaultController extends Controller
     private function sendMessage($chat, $responseBody): void
     {
         $client = new \GuzzleHttp\Client();
-        $token = 'bot611172444:AAFnyoFHYgiB5HmR8SXmK8_p-Kud4WYaKJ0';
+        $token = $this->container->getParameter('tg_token');
         $url = "https://api.telegram.org/".$token."/sendMessage?chat_id=".$chat;
         $url = $url."&text=".urlencode($responseBody);
         $res = $client->request(
             'GET',
             $url
         );
+    }
+
+
+    /**
+     * @Route("/redmine", name="redmine")
+     */
+    public function redmine(Request $request)
+    {
+
+        $file = new \SplFileObject('/home/genkovich/tessst.txt', 'a');
+        var_dump($file); die;
+        $client = new Client([
+            ['verify' => false, 'debug' => true]
+        ]);
+
+
+        $url = 'https://redmine.netpeak.net/issues.json';
+        $options = [
+            'verify' => false,
+            'query' => [
+                'key' => '298c9dfcf8c5cc241d138449a32a7d8bc29ecb84',
+                'status_id' => '*',
+                'fixed_version_id' => '451'
+            ]
+        ];
+        $response = $client->request('GET', $url, $options);
+        $body = json_decode($response->getBody());
+        $total = $body->total_count;
+
+        for ($offset = 0; $offset < $total; $offset+= 25) {
+            $options['query']['offset'] =  $offset;
+            $requestUrl = $url . '?' . http_build_query($options['query']);
+            $request = new \GuzzleHttp\Psr7\Request('GET', $requestUrl);
+            $requests[] = $request;
+
+        }
+        $pool = Pool::batch($client, $requests, [
+            'concurrency' => 5,
+            'fulfilled' => function ($response, $index) {
+
+            },
+            'rejected' => function ($reason, $index) {
+                // this is delivered each failed request
+            },
+        ]);
+        var_dump($pool); die;
+        $promise = $pool->promise();
+
+        $promise->wait();
+        var_dump($promise->getState()); die;
+        return Response::create(1);
     }
 }
