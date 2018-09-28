@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<project name="info-rating" basedir="../../">
+    <description>rating production</description>
+
+    <property name="dist.dir" location="dist"/>
+    <property name="build.main.dir" location="build"/>
+    <property name="build.dir" location="${build.main.dir}/prod"/>
+    <property name="reports.dir" location="reports"/>
+
+    <target name="build" depends="clean, makedirs, composer, copy" description="Build only source"/>
+
+    <target name="clean" description="Clean work folder">
+        <delete dir="${dist.dir}" failonerror="false"/>
+        <delete dir="${reports.dir}" failonerror="false"/>
+    </target>
+
+    <target name="makedirs" description="Make necessary dirs">
+        <mkdir dir="${dist.dir}"/>
+        <mkdir dir="${reports.dir}"/>
+    </target>
+
+    <target name="composer" description="Call Composer">
+        <exec executable="composer" output="${reports.dir}/composer.log" failonerror="true">
+            <arg value="install"/>
+        </exec>
+    </target>
+
+    <target name="npm" description="Npm install">
+        <mkdir dir="${basedir}/frontend/dist/css"></mkdir>
+        <mkdir dir="${basedir}/frontend/dist/js"></mkdir>
+
+        <exec executable="npm" output="${reports.dir}/npm_install.log" failonerror="true">
+            <arg value="install"/>
+        </exec>
+        <exec executable="npm" output="${reports.dir}/npm_run_production.log" failonerror="true">
+            <arg value="run"/>
+            <arg value="production"/>
+        </exec>
+    </target>
+
+    <target name="copy" description="Copy necessary files in dist">
+        <copy todir="${dist.dir}" overwrite="true">
+            <fileset dir=".">
+                <include name="**"/>
+            </fileset>
+        </copy>
+    </target>
+</project>
